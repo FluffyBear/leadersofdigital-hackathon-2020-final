@@ -1,5 +1,6 @@
 package minenergo.web
 
+import minenergo.web.dto.AnalyseRequestDto
 import minenergo.web.dto.VisualDataDto
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +14,7 @@ class Controller @Autowired constructor() {
     companion object : KLogging()
 
     @GetMapping(path = ["/analyse"])
-    fun analyse() : VisualDataDto {
-        return VisualDataDto()
+    fun analyse(analyseRequestDto: AnalyseRequestDto) : VisualDataDto {
+        return VisualDataDto(listOf(), listOf())
     }
 }
