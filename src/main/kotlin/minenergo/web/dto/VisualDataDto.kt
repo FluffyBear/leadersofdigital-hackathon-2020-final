@@ -1,4 +1,6 @@
 package minenergo.web.dto
 
-class VisualDataDto {
-}
+class VisualDataDto(
+    val x: List<Int>,
+    val y: List<Int>
+)
