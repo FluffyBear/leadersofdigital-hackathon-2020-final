@@ -3,7 +3,7 @@ package minenergo.misc
 import java.time.YearMonth
 
 class YearMonthIterator (
-    private val startDate: YearMonth,
+    startDate: YearMonth,
     private val endDateInclusive: YearMonth
 ): Iterator<YearMonth> {
     private var currentDate = startDate

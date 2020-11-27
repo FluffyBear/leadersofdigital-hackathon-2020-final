@@ -1,48 +1,49 @@
 package minenergo
 
 import minenergo.misc.rangeTo
-import minenergo.web.dto.AnalyseRequestDto
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.YearMonth
 
 class SimpleTests {
 
     private val math = Math()
+    private val consumption = generateElectricityConsumption()
 
     @Test
     fun oneBigIndustry() {
-        val request = generateOneBingIndustry()
-        val response = math.analyse(request.industries, request.energyConsumption, request.predictionHorizon)
+        val industries = generateOneBingIndustry()
+        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
-                println("$it > ${response.power[it]}")
+                assertEquals(consumption.power.getValue(it.minusYears(1)), response.power.getValue(it), 0.0001)
             }
     }
 
     @Test
     fun oneBigIndustryPlusSmallIndustry() {
-        val request = generateOneBingIndustryPlusOneSmall()
-        val response = math.analyse(request.industries, request.energyConsumption, request.predictionHorizon)
+        val industries = generateOneBingIndustryPlusOneSmall()
+        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
-                println("$it > ${response.power[it]}")
+                assertEquals(consumption.power.getValue(it.minusYears(1)), response.power.getValue(it), 0.0001)
             }
     }
 
     @Test
     fun twoBigIndustries() {
-        val request = generateTwoBigIndustries()
-        val response = math.analyse(request.industries, request.energyConsumption, request.predictionHorizon)
+        val industries = generateTwoBigIndustries()
+        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
-                println("$it > ${response.power[it]}")
+                assertEquals(consumption.power.getValue(it.minusYears(1)), response.power.getValue(it), 0.0001)
             }
     }
 
-    fun generateOneBingIndustry(): AnalyseRequestDto {
+    private fun generateElectricityConsumption(): Industry {
         val energyConsumption = sortedMapOf<YearMonth, Double>()
         for (i in 2010..2020) {
             energyConsumption[YearMonth.of(i, 1)] = 10500.0
@@ -58,6 +59,10 @@ class SimpleTests {
             energyConsumption[YearMonth.of(i, 11)] = 9800.0
             energyConsumption[YearMonth.of(i, 12)] = 10200.0
         }
+        return Industry("energy", energyConsumption)
+    }
+
+    private fun generateOneBingIndustry(): List<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
             Industry("1",
@@ -80,29 +85,10 @@ class SimpleTests {
             )
         )
 
-        return AnalyseRequestDto(
-            industries = industries,
-            energyConsumption = Industry("oneBigIndustry", energyConsumption),
-            predictionHorizon = YearMonth.of(2021, 12)
-        )
+        return industries
     }
 
-    fun generateOneBingIndustryPlusOneSmall(): AnalyseRequestDto {
-        val energyConsumption = sortedMapOf<YearMonth, Double>()
-        for (i in 2010..2020) {
-            energyConsumption[YearMonth.of(i, 1)] = 10500.0
-            energyConsumption[YearMonth.of(i, 2)] = 11000.0
-            energyConsumption[YearMonth.of(i, 3)] = 9800.0
-            energyConsumption[YearMonth.of(i, 4)] = 9500.0
-            energyConsumption[YearMonth.of(i, 5)] = 9000.0
-            energyConsumption[YearMonth.of(i, 6)] = 8500.0
-            energyConsumption[YearMonth.of(i, 7)] = 8400.0
-            energyConsumption[YearMonth.of(i, 8)] = 8500.0
-            energyConsumption[YearMonth.of(i, 9)] = 9100.0
-            energyConsumption[YearMonth.of(i, 10)] = 9500.0
-            energyConsumption[YearMonth.of(i, 11)] = 9800.0
-            energyConsumption[YearMonth.of(i, 12)] = 10200.0
-        }
+    private fun generateOneBingIndustryPlusOneSmall(): List<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
             Industry("1",
@@ -144,29 +130,10 @@ class SimpleTests {
                 }.toMap().toSortedMap()
             )
         )
-        return AnalyseRequestDto(
-            industries = industries,
-            energyConsumption = Industry("oneBigIndustry", energyConsumption),
-            predictionHorizon = YearMonth.of(2021, 12)
-        )
+        return industries
     }
 
-    fun generateTwoBigIndustries(): AnalyseRequestDto {
-        val energyConsumption = sortedMapOf<YearMonth, Double>()
-        for (i in 2010..2020) {
-            energyConsumption[YearMonth.of(i, 1)] = 10500.0
-            energyConsumption[YearMonth.of(i, 2)] = 11000.0
-            energyConsumption[YearMonth.of(i, 3)] = 9800.0
-            energyConsumption[YearMonth.of(i, 4)] = 9500.0
-            energyConsumption[YearMonth.of(i, 5)] = 9000.0
-            energyConsumption[YearMonth.of(i, 6)] = 8500.0
-            energyConsumption[YearMonth.of(i, 7)] = 8400.0
-            energyConsumption[YearMonth.of(i, 8)] = 8500.0
-            energyConsumption[YearMonth.of(i, 9)] = 9100.0
-            energyConsumption[YearMonth.of(i, 10)] = 9500.0
-            energyConsumption[YearMonth.of(i, 11)] = 9800.0
-            energyConsumption[YearMonth.of(i, 12)] = 10200.0
-        }
+    private fun generateTwoBigIndustries(): List<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
             Industry("1",
@@ -208,10 +175,6 @@ class SimpleTests {
                 }.toMap().toSortedMap()
             )
         )
-        return AnalyseRequestDto(
-            industries = industries,
-            energyConsumption = Industry("oneBigIndustry", energyConsumption),
-            predictionHorizon = YearMonth.of(2021, 12)
-        )
+        return industries
     }
 }
