@@ -22,7 +22,13 @@ class SimpleTests {
 
     @Test
     fun oneBigIndustryPlusSmallIndustry() {
+        val request = generateOneBingIndustryPlusOneSmall()
+        val response = math.analyse(request.industries, request.energyConsumption, request.predictionHorizon)
 
+        YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
+            .forEach {
+                println("$it > ${response.power[it]}")
+            }
     }
 
     @Test
@@ -74,55 +80,71 @@ class SimpleTests {
             predictionHorizon = YearMonth.of(2021, 12)
         )
     }
-/*
+
     fun generateOneBingIndustryPlusOneSmall(): AnalyseRequestDto {
-        val energyConsumption = hashMapOf<YearMonth, Int>()
-        for (i in 1..10) {
-            energyConsumption[YearMonth.of(i, 1)] = 10500
-            energyConsumption[YearMonth.of(i, 2)] = 11000
-            energyConsumption[YearMonth.of(i, 3)] = 9800
-            energyConsumption[YearMonth.of(i, 4)] = 9500
-            energyConsumption[YearMonth.of(i, 5)] = 9000
-            energyConsumption[YearMonth.of(i, 6)] = 8500
-            energyConsumption[YearMonth.of(i, 7)] = 8400
-            energyConsumption[YearMonth.of(i, 8)] = 8500
-            energyConsumption[YearMonth.of(i, 9)] = 9100
-            energyConsumption[YearMonth.of(i, 10)] = 9500
-            energyConsumption[YearMonth.of(i, 11)] = 9800
-            energyConsumption[YearMonth.of(i, 12)] = 10200
+        val energyConsumption = sortedMapOf<YearMonth, Double>()
+        for (i in 2010..2020) {
+            energyConsumption[YearMonth.of(i, 1)] = 10500.0
+            energyConsumption[YearMonth.of(i, 2)] = 11000.0
+            energyConsumption[YearMonth.of(i, 3)] = 9800.0
+            energyConsumption[YearMonth.of(i, 4)] = 9500.0
+            energyConsumption[YearMonth.of(i, 5)] = 9000.0
+            energyConsumption[YearMonth.of(i, 6)] = 8500.0
+            energyConsumption[YearMonth.of(i, 7)] = 8400.0
+            energyConsumption[YearMonth.of(i, 8)] = 8500.0
+            energyConsumption[YearMonth.of(i, 9)] = 9100.0
+            energyConsumption[YearMonth.of(i, 10)] = 9500.0
+            energyConsumption[YearMonth.of(i, 11)] = 9800.0
+            energyConsumption[YearMonth.of(i, 12)] = 10200.0
         }
         val industries = mutableListOf<Industry>()
-        for (i in 1..10) {
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 1), 10350))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 1), 150))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 2), 11000))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 2), 0))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 3), 9700))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 3), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 4), 9400))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 4), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 5), 9000))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 5), 0))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 6), 8400))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 6), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 7), 8300))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 7), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 8), 8350))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 8), 150))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 9), 9000))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 9), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 10), 9350))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 10), 150))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 11), 9700))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 11), 100))))
-            industries.add(Industry("1", hashMapOf(Pair(YearMonth.of(i, 12), 10100))))
-            industries.add(Industry("2", hashMapOf(Pair(YearMonth.of(i, 12), 100))))
-        }
+        industries.add(
+            Industry("1",
+                (2010..2021).flatMap {i ->
+                    listOf(
+                        YearMonth.of(i, 1) to 10350.0,
+                        YearMonth.of(i, 2) to 11000.0,
+                        YearMonth.of(i, 3) to 9700.0,
+                        YearMonth.of(i, 4) to 9400.0,
+                        YearMonth.of(i, 5) to 9000.0,
+                        YearMonth.of(i, 6) to 8400.0,
+                        YearMonth.of(i, 7) to 8300.0,
+                        YearMonth.of(i, 8) to 8350.0,
+                        YearMonth.of(i, 9) to 9000.0,
+                        YearMonth.of(i, 10) to 9350.0,
+                        YearMonth.of(i, 11) to 9700.0,
+                        YearMonth.of(i, 12) to 10100.0
+                    )
+                }.toMap().toSortedMap()
+            )
+        )
+        industries.add(
+            Industry("2",
+                (2010..2021).flatMap {i ->
+                    listOf(
+                        YearMonth.of(i, 1) to 150.0,
+                        YearMonth.of(i, 2) to 0.0,
+                        YearMonth.of(i, 3) to 100.0,
+                        YearMonth.of(i, 4) to 100.0,
+                        YearMonth.of(i, 5) to 0.0,
+                        YearMonth.of(i, 6) to 100.0,
+                        YearMonth.of(i, 7) to 100.0,
+                        YearMonth.of(i, 8) to 150.0,
+                        YearMonth.of(i, 9) to 100.0,
+                        YearMonth.of(i, 10) to 150.0,
+                        YearMonth.of(i, 11) to 100.0,
+                        YearMonth.of(i, 12) to 100.0
+                    )
+                }.toMap().toSortedMap()
+            )
+        )
         return AnalyseRequestDto(
-            Industry("oneBigAndOneSmallIndustries", energyConsumption), industries
+            industries = industries,
+            energyConsumption = Industry("oneBigIndustry", energyConsumption),
+            predictionHorizon = YearMonth.of(2021, 12)
         )
     }
-
+/*
     fun generateTwoBigIndustries(): AnalyseRequestDto {
         val energyConsumption = hashMapOf<YearMonth, Int>()
         for (i in 1..10) {
@@ -170,5 +192,5 @@ class SimpleTests {
             Industry("oneBigAndOneSmallIndustries", energyConsumption), industries
         )
     }
-*/
+ */
 }
