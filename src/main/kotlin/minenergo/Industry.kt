@@ -1,8 +1,9 @@
 package minenergo
 
 import java.time.YearMonth
+import java.util.*
 
-class Industry(
+data class Industry(
     val name: String,
-    val power: HashMap<YearMonth,Int>
+    val power: SortedMap<YearMonth,Double>
 )

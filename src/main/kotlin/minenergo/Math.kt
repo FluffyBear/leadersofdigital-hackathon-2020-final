@@ -1,8 +1,42 @@
 package minenergo
 
+import minenergo.misc.rangeTo
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
+import java.time.YearMonth
 
-class Math() {
+class Math {
+
+    fun analyse(industries: List<Industry>, industryToPredict: Industry, predictionHorizon: YearMonth) : Industry {
+        val regression = OLSMultipleLinearRegression()
+        regression.newSampleData(
+            industryToPredict.power.map { it.value }.toDoubleArray(),
+            industries.first().let { industry ->
+                industry.power.firstKey().rangeTo(industryToPredict.power.lastKey()).map {yearMonth ->
+                    industries.map { it.power.getValue(yearMonth) }.toDoubleArray()
+                }.toTypedArray()
+            }
+            /*
+            industries
+                .map { industry -> industry.power.map { it.value }
+                .take(industryToPredict.power.size).toDoubleArray() }
+                .toTypedArray()
+             */
+        )
+        val params = regression.estimateRegressionParameters()
+
+        params.forEach { println(it) }
+
+        return Industry(
+            name = industryToPredict.name,
+            power = industryToPredict.power.firstKey().rangeTo(predictionHorizon).associateWith { yearMonth ->
+                (industryToPredict.power[yearMonth]
+                    ?: params.reduceIndexed { idx, acc, p -> acc +
+                            p*industries[idx-1].power.getValue(yearMonth)
+                    })
+            }.toSortedMap()
+        )
+    }
+
     fun analyse() {
         val regression = OLSMultipleLinearRegression()
         // weight
