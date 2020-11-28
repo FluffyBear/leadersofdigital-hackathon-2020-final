@@ -13,3 +13,5 @@
 Несколько примеров с предзагруженными данными можно увидеть на главной странице http://localhost:8080/index.html
 
 Также вы можете анализировать произвольные данные через API: http://localhost:8080/swagger-ui.html#/operations/controller/analyseUsingPOST
+
+Примеры тестовых данных: https://github.com/FluffyBear/leadersofdigital-hackathon-2020-final/tree/master/src/main/resources/static/test
