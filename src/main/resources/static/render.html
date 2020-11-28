@@ -42,26 +42,21 @@ var svg = d3.select("body").append("svg")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-function draw(data, country) {
+function draw(industry, color, label) {
 
-  var obj = data.prediction.power;
+  var obj = industry.power
   var data = Object.keys(obj).map((key) => [key, obj[key]]);
   data.forEach(function(d) {
       d[0] = parseTime(d[0]);
   });
 
-  // Scale the range of the data
-  x.domain(d3.extent(data, function(d) {
-    return d[0];
-  }));
-  y.domain([0, d3.max(data, function(d) {
-	  return d[1]; })]);
-
   // Add the valueline path.
   svg.append("path")
       .data([data])
       .attr("class", "line")
+      .style("stroke", color)
       .attr("d", valueline);
+
   // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -70,7 +65,14 @@ function draw(data, country) {
   // Add the Y Axis
   svg.append("g")
       .call(d3.axisLeft(y));
-  }
+
+  svg.append("text")
+      .attr("transform", "translate(3,"+y(data[0][1])+")")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "start")
+      .style("fill", color)
+      .text(industry.name);
+}
 
 // Get the data
 var testCase = location.search.split('test=')[1]
@@ -83,8 +85,20 @@ d3.json("/test/"+testCase+".json").then(data => {
     headers: { "Content-type": "application/json; charset=UTF-8" }
   }).then(response => {
       console.log("Result", response)
+
+      // Scale the range of the data
+      x.domain(d3.extent(Object.keys(response.prediction.power), function(d) {
+        return parseTime(d);
+      }));
+
+      y.domain([0, d3.max(Object.values(response.prediction.power).concat(data.industries.flatMap(x=>Object.values(x.power))),
+        function(d) { return d; })]);
+
       // trigger render
-      draw(response, "Energy");
+      draw(response.prediction, 'red');
+      data.industries.forEach(function(industry) {
+          draw(industry, 'blue');
+      });
   });
 });
 </script>
