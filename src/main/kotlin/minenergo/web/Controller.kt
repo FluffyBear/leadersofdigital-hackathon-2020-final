@@ -21,10 +21,4 @@ class Controller @Autowired constructor(
     fun analyse(@RequestBody request: AnalyseRequestDto) : AnalyseResponseDto {
         return AnalyseResponseDto(math.analyse(request.industries, request.energyConsumption, request.predictionHorizon))
     }
-
-    @GetMapping(path = ["/test"])
-    fun test(@RequestParam num: String) : AnalyseResponseDto {
-        val request = AnalyseRequestDto.parse(Resources.getResource("test/$num.json").readText())
-        return AnalyseResponseDto(math.analyse(request.industries, request.energyConsumption, request.predictionHorizon))
-    }
 }

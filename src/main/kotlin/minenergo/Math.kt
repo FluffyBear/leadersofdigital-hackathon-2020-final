@@ -4,8 +4,10 @@ import minenergo.misc.YearMonthProgression
 import minenergo.misc.rangeTo
 import minenergo.web.DataFiller
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
+import org.springframework.stereotype.Component
 import java.time.YearMonth
 
+@Component
 class Math {
     private val dataFiller = DataFiller()
 

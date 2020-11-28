@@ -12,6 +12,7 @@
 
 <!-- load the d3.js library -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/d3-fetch"></script>
 <script>
 
 // set the dimensions and margins of the graph
@@ -85,14 +86,24 @@ function draw(data, country) {
   svg.append("g")
       .call(d3.axisLeft(y));
   }
+
 // Get the data
 var testCase = location.search.split('test=')[1]
-d3.json("analyse/test="+testCase, function(error, data) {
-  if (error) throw error;
+d3.json("/test/"+testCase+".json", function(data) {
+  console.log("Request", data)
+
+  d3.json("/analyse", {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  }).then(response => {
+      console.log("Result", response)
+  });
 
   // trigger render
-  draw(data, "Afghanistan");
+//  draw(data, "Afghanistan");
 });
+
 
 </script>
 </body>
