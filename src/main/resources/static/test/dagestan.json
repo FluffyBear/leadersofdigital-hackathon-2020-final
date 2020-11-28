@@ -88,5 +88,6 @@
       }
     }
   ],
-  "predictionHorizon": "2019-11"
+  "predictionStart": "2019-09",
+  "predictionHorizon": "2019-12"
 }
