@@ -95,7 +95,7 @@ class InterpolationTest {
                 )
             )
         }
-        assertEquals(2.5, uncompleteTestDto[1].power[YearMonth.of(2010, 8)])
+        assertEquals(2.2, uncompleteTestDto[1].power[YearMonth.of(2010, 8)])
         assertEquals(2.0, uncompleteTestDto[1].power[YearMonth.of(2010, 7)])
     }
 }
