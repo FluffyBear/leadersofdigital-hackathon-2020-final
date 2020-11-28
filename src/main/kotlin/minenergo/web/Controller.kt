@@ -1,5 +1,6 @@
 package minenergo.web
 
+import com.google.common.io.Resources
 import minenergo.Math
 import minenergo.web.dto.AnalyseRequestDto
 import minenergo.web.dto.AnalyseResponseDto
@@ -16,8 +17,14 @@ class Controller @Autowired constructor(
 ) {
     companion object : KLogging()
 
-    @GetMapping(path = ["/analyse"])
-    fun analyse(request: AnalyseRequestDto) : AnalyseResponseDto {
+    @PostMapping(path = ["/analyse"])
+    fun analyse(@RequestBody request: AnalyseRequestDto) : AnalyseResponseDto {
+        return AnalyseResponseDto(math.analyse(request.industries, request.energyConsumption, request.predictionHorizon))
+    }
+
+    @GetMapping(path = ["/test"])
+    fun test(@RequestParam num: String) : AnalyseResponseDto {
+        val request = AnalyseRequestDto.parse(Resources.getResource("test/$num.json").readText())
         return AnalyseResponseDto(math.analyse(request.industries, request.energyConsumption, request.predictionHorizon))
     }
 }
