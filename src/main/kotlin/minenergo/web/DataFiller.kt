@@ -6,18 +6,19 @@ import minenergo.web.dto.AnalyseRequestDto
 
 class DataFiller {
     fun fillData(analyseRequestDto: AnalyseRequestDto, yearMonthProgression: YearMonthProgression) {
-        if (isIntervalNotComplete(analyseRequestDto, yearMonthProgression)) {
+        if (!isIntervalComplete(analyseRequestDto, yearMonthProgression)) {
             fillGaps(analyseRequestDto, yearMonthProgression)
         }
     }
 
-    private fun isIntervalNotComplete(
+    fun isIntervalComplete(
         analyseRequestDto: AnalyseRequestDto,
         yearMonthProgression: YearMonthProgression
     ): Boolean {
         yearMonthProgression.forEach {
-            if (!analyseRequestDto.industries.map { industry -> industry.power.firstKey() }.contains(it))
+            if (!analyseRequestDto.industries.map { industry -> industry.power.keys }.any { set -> set.contains(it) }) {
                 return false
+            }
         }
         return true
     }
@@ -25,12 +26,13 @@ class DataFiller {
     private fun fillGaps(analyseRequestDto: AnalyseRequestDto, yearMonthProgression: YearMonthProgression) {
         val value = calculateValue(analyseRequestDto, yearMonthProgression)
         yearMonthProgression.forEach {
-            if (!analyseRequestDto.industries.map { industry -> industry.power.firstKey() }.contains(it))
+            if (!analyseRequestDto.industries.map { industry -> industry.power.keys }.any { set -> set.contains(it) }) {
                 analyseRequestDto.industries.add(Industry("filler", sortedMapOf(Pair(it, value))))
+            }
         }
     }
 
-    private fun calculateValue(
+    fun calculateValue(
         analyseRequestDto: AnalyseRequestDto,
         yearMonthProgression: YearMonthProgression
     ): Double {
