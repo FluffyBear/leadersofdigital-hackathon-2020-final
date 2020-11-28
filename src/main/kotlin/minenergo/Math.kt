@@ -19,7 +19,7 @@ class Math {
         industries.forEach {
             interpolator.interpolate(
                 it,
-                YearMonthProgression(startDate(industries), predictionHorizon.minusMonths(1))
+                YearMonthProgression(startDate(industries), predictionHorizon)
             )
         }
         interpolator.interpolate(
