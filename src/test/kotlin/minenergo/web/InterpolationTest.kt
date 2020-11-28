@@ -6,8 +6,8 @@ import minenergo.misc.YearMonthProgression
 import org.junit.Test
 import java.time.YearMonth
 
-class DataFillerTest {
-    private val dataFiller = DataFiller()
+class InterpolationTest {
+    private val dataFiller = Interpolation()
 
     @Test
     fun isDataComplete() {
@@ -32,20 +32,24 @@ class DataFillerTest {
                 )
             )
         )
-        assertEquals(
-            true,
-            dataFiller.isIntervalComplete(
-                completeTestDto,
-                YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 5))
+        completeTestDto.forEach {
+            assertEquals(
+                true,
+                dataFiller.isIntervalComplete(
+                    it,
+                    YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 5))
+                )
             )
-        )
-        assertEquals(
-            false,
-            dataFiller.isIntervalComplete(
-                uncompleteTestDto,
-                YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 5))
+        }
+        uncompleteTestDto.forEach {
+            assertEquals(
+                false,
+                dataFiller.isIntervalComplete(
+                    it,
+                    YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 5))
+                )
             )
-        )
+        }
     }
 
     @Test
@@ -70,21 +74,27 @@ class DataFillerTest {
                 )
             )
         )
-        assertEquals(
-            false,
-            dataFiller.isIntervalComplete(
-                uncompleteTestDto,
-                YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
+        uncompleteTestDto.forEach {
+            assertEquals(
+                false,
+                dataFiller.isIntervalComplete(
+                    it,
+                    YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
+                )
             )
-        )
-        dataFiller.fillData(uncompleteTestDto, YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12)))
-        assertEquals(
-            true,
-            dataFiller.isIntervalComplete(
-                uncompleteTestDto,
-                YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
+        }
+        uncompleteTestDto.forEach {
+            dataFiller.interpolate(it, YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12)))
+        }
+        uncompleteTestDto.forEach {
+            assertEquals(
+                true,
+                dataFiller.isIntervalComplete(
+                    it,
+                    YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
+                )
             )
-        )
+        }
         assertEquals(2.5, uncompleteTestDto[1].power[YearMonth.of(2010, 1)])
         assertEquals(2.0, uncompleteTestDto[1].power[YearMonth.of(2010, 7)])
     }

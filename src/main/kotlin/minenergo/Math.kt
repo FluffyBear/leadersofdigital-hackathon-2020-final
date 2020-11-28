@@ -2,32 +2,44 @@ package minenergo
 
 import minenergo.misc.YearMonthProgression
 import minenergo.misc.rangeTo
-import minenergo.web.DataFiller
+import minenergo.web.Interpolation
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
 import org.springframework.stereotype.Component
 import java.time.YearMonth
 
 @Component
 class Math {
-    private val dataFiller = DataFiller()
+    private val interpolator = Interpolation()
 
     fun analyse(
         industries: MutableList<Industry>,
-        industryToPredict: Industry,
+        energyConsumption: Industry,
         predictionHorizon: YearMonth
     ): Industry {
-        dataFiller.fillData(industries, YearMonthProgression(startDate(industries), predictionHorizon.minusMonths(1)))
+        industries.forEach {
+            interpolator.interpolate(
+                it,
+                YearMonthProgression(startDate(industries), predictionHorizon.minusMonths(1))
+            )
+        }
+        interpolator.interpolate(
+            energyConsumption, YearMonthProgression(
+                startDate(mutableListOf(energyConsumption)), endDate(
+                    mutableListOf(energyConsumption)
+                )
+            )
+        )
         return OLSMultipleLinearRegression().let { regression ->
             regression.newSampleData(
-                industryToPredict.power.map { it.value }.toDoubleArray(),
-                industries.first().power.firstKey().rangeTo(industryToPredict.power.lastKey()).map { yearMonth ->
+                energyConsumption.power.map { it.value }.toDoubleArray(),
+                industries.first().power.firstKey().rangeTo(energyConsumption.power.lastKey()).map { yearMonth ->
                     industries.map { it.power.getValue(yearMonth) }.toDoubleArray()
                 }.toTypedArray()
             )
             Industry(
-                name = industryToPredict.name,
-                power = industryToPredict.power.firstKey().rangeTo(predictionHorizon).associateWith { yearMonth ->
-                    (industryToPredict.power[yearMonth] ?: regression.estimateRegressionParameters()
+                name = energyConsumption.name,
+                power = energyConsumption.power.firstKey().rangeTo(predictionHorizon).associateWith { yearMonth ->
+                    (energyConsumption.power[yearMonth] ?: regression.estimateRegressionParameters()
                         .reduceIndexed { idx, acc, p ->
                             acc + p * industries[idx - 1].power.getValue(yearMonth)
                         })
@@ -39,5 +51,10 @@ class Math {
     fun startDate(industries: MutableList<Industry>): YearMonth {
         return industries.map { industry -> industry.power.keys }.map { set -> set.min() }
             .minBy { it as YearMonth } as YearMonth
+    }
+
+    fun endDate(industries: MutableList<Industry>): YearMonth {
+        return industries.map { industry -> industry.power.keys }.map { set -> set.max() }
+            .maxBy { it as YearMonth } as YearMonth
     }
 }
