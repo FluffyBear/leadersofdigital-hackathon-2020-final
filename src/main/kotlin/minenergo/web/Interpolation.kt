@@ -50,15 +50,16 @@ class Interpolation {
 
     fun fillLast(industry: Industry, yearMonthProgression: YearMonthProgression, horizon: YearMonth) {
         YearMonthProgression(yearMonthProgression.start, horizon).forEach {
-            industry.power[it] = industry.power[yearMonthProgression.start]?.plus(
-                (industry.power[yearMonthProgression.endInclusive]?.minus(
-                    industry.power[yearMonthProgression.start] as Double
-                )!!).div(
-                    (yearMonthProgression.endInclusive.year * 12 + yearMonthProgression.endInclusive.monthValue) -
-                            (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue)
+            if (!industry.power.keys.contains(it))
+                industry.power[it] = industry.power[yearMonthProgression.start]?.plus(
+                    (industry.power[yearMonthProgression.endInclusive]?.minus(
+                        industry.power[yearMonthProgression.start] as Double
+                    )!!).div(
+                        (yearMonthProgression.endInclusive.year * 12 + yearMonthProgression.endInclusive.monthValue) -
+                                (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue)
+                    )
+                        .times((it.year * 12 + it.monthValue) - (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue))
                 )
-                    .times((it.year * 12 + it.monthValue) - (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue))
-            )
         }
     }
 }
