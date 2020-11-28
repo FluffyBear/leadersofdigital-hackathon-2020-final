@@ -45,7 +45,7 @@ class MathTest {
                 }.toMap().toSortedMap()
             )
         )
-        val response = math.analyse(industries, consumption, YearMonth.of(2017, 12))
+        val response = math.analyse(industries, consumption, YearMonth.of(2013, 12), YearMonth.of(2017, 12))
         assertEquals(1047447.3, response.power.getValue(YearMonth.of(2014, 12)), 1047447.3 / 20)
     }
 

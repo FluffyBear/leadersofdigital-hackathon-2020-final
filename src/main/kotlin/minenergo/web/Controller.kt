@@ -19,6 +19,13 @@ class Controller @Autowired constructor(
 
     @PostMapping(path = ["/analyse"])
     fun analyse(@RequestBody request: AnalyseRequestDto) : AnalyseResponseDto {
-        return AnalyseResponseDto(math.analyse(request.industries, request.energyConsumption, request.predictionHorizon))
+        return AnalyseResponseDto(
+            math.analyse(
+                request.industries,
+                request.energyConsumption,
+                request.predictionStart,
+                request.predictionHorizon
+            )
+        )
     }
 }

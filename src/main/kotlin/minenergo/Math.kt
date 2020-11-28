@@ -14,6 +14,7 @@ class Math {
     fun analyse(
         industries: MutableList<Industry>,
         energyConsumption: Industry,
+        predictionStart: YearMonth?,
         predictionHorizon: YearMonth
     ): Industry {
         industries.forEach {
@@ -31,18 +32,20 @@ class Math {
         )
         return OLSMultipleLinearRegression().let { regression ->
             regression.newSampleData(
-                energyConsumption.power.map { it.value }.toDoubleArray(),
-                industries.first().power.firstKey().rangeTo(energyConsumption.power.lastKey()).map { yearMonth ->
+                energyConsumption.power.filter { predictionStart == null || it.key <= predictionStart }.map { it.value }.toDoubleArray(),
+                industries.first().power.firstKey().rangeTo(predictionStart ?: energyConsumption.power.lastKey()).map { yearMonth ->
                     industries.map { it.power.getValue(yearMonth) }.toDoubleArray()
                 }.toTypedArray()
             )
             Industry(
                 name = energyConsumption.name,
                 power = energyConsumption.power.firstKey().rangeTo(predictionHorizon).associateWith { yearMonth ->
-                    (energyConsumption.power[yearMonth] ?: regression.estimateRegressionParameters()
+                    energyConsumption.power[yearMonth]
+                        ?.takeIf { predictionStart == null || yearMonth <= predictionStart }
+                        ?: regression.estimateRegressionParameters()
                         .reduceIndexed { idx, acc, p ->
                             acc + p * industries[idx - 1].power.getValue(yearMonth)
-                        })
+                        }
                 }.toSortedMap()
             )
         }
