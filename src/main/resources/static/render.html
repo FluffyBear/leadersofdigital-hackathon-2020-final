@@ -96,6 +96,7 @@ d3.json("/test/"+testCase+".json").then(data => {
 
       // trigger render
       draw(response.prediction, 'red');
+      draw(data.energyConsumption, 'green');
       data.industries.forEach(function(industry) {
           draw(industry, 'blue');
       });
