@@ -65,8 +65,8 @@ class DataFillerTest {
             ),
             Industry(
                 "2", sortedMapOf(
-                    Pair(YearMonth.of(2010, 7), 1.0),
-                    Pair(YearMonth.of(2010, 12), 1.0)
+                    Pair(YearMonth.of(2010, 7), 2.0),
+                    Pair(YearMonth.of(2010, 12), 3.0)
                 )
             )
         )
@@ -85,21 +85,7 @@ class DataFillerTest {
                 YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
             )
         )
-        assertEquals(
-            2.0,
-            dataFiller.calculateValue(
-                uncompleteTestDto,
-                YearMonthProgression(YearMonth.of(2010, 1), YearMonth.of(2010, 12))
-            )
-        )
-        assertEquals(2.0, uncompleteTestDto.filter { industry ->
-            industry.power.containsKey(YearMonth.of(2010, 3))
-        }.map { industry -> industry.power[YearMonth.of(2010, 3)] }.sumByDouble { it as Double })
-        assertEquals(1.0, uncompleteTestDto.filter { industry ->
-            industry.power.containsKey(YearMonth.of(2010, 7))
-        }.map { industry -> industry.power[YearMonth.of(2010, 7)] }.sumByDouble { it as Double })
-        assertEquals(3.0, uncompleteTestDto.filter { industry ->
-            industry.power.containsKey(YearMonth.of(2010, 12))
-        }.map { industry -> industry.power[YearMonth.of(2010, 12)] }.sumByDouble { it as Double })
+        assertEquals(2.5, uncompleteTestDto[1].power[YearMonth.of(2010, 1)])
+        assertEquals(2.0, uncompleteTestDto[1].power[YearMonth.of(2010, 7)])
     }
 }
