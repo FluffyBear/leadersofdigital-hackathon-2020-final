@@ -13,7 +13,7 @@ class SimpleTests {
     @Test
     fun oneBigIndustry() {
         val industries = generateOneBingIndustry()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
+        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
@@ -24,7 +24,7 @@ class SimpleTests {
     @Test
     fun oneBigIndustryPlusSmallIndustry() {
         val industries = generateOneBingIndustryPlusOneSmall()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
+        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
@@ -35,7 +35,7 @@ class SimpleTests {
     @Test
     fun twoBigIndustries() {
         val industries = generateTwoBigIndustries()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021,12))
+        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
@@ -62,11 +62,12 @@ class SimpleTests {
         return Industry("energy", energyConsumption)
     }
 
-    private fun generateOneBingIndustry(): List<Industry> {
+    private fun generateOneBingIndustry(): MutableList<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
-            Industry("1",
-                (2010..2021).flatMap {i ->
+            Industry(
+                "1",
+                (2010..2021).flatMap { i ->
                     listOf(
                         YearMonth.of(i, 1) to 10500.0,
                         YearMonth.of(i, 2) to 11000.0,
@@ -88,11 +89,12 @@ class SimpleTests {
         return industries
     }
 
-    private fun generateOneBingIndustryPlusOneSmall(): List<Industry> {
+    private fun generateOneBingIndustryPlusOneSmall(): MutableList<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
-            Industry("1",
-                (2010..2021).flatMap {i ->
+            Industry(
+                "1",
+                (2010..2021).flatMap { i ->
                     listOf(
                         YearMonth.of(i, 1) to 10350.0,
                         YearMonth.of(i, 2) to 11000.0,
@@ -111,8 +113,9 @@ class SimpleTests {
             )
         )
         industries.add(
-            Industry("2",
-                (2010..2021).flatMap {i ->
+            Industry(
+                "2",
+                (2010..2021).flatMap { i ->
                     listOf(
                         YearMonth.of(i, 1) to 150.0,
                         YearMonth.of(i, 2) to 0.0,
@@ -133,11 +136,12 @@ class SimpleTests {
         return industries
     }
 
-    private fun generateTwoBigIndustries(): List<Industry> {
+    private fun generateTwoBigIndustries(): MutableList<Industry> {
         val industries = mutableListOf<Industry>()
         industries.add(
-            Industry("1",
-                (2010..2021).flatMap {i ->
+            Industry(
+                "1",
+                (2010..2021).flatMap { i ->
                     listOf(
                         YearMonth.of(i, 1) to 10350.0,
                         YearMonth.of(i, 2) to 11000.0,
@@ -156,8 +160,9 @@ class SimpleTests {
             )
         )
         industries.add(
-            Industry("2",
-                (2010..2021).flatMap {i ->
+            Industry(
+                "2",
+                (2010..2021).flatMap { i ->
                     listOf(
                         YearMonth.of(i, 1) to 15000.0,
                         YearMonth.of(i, 2) to 000.0,
