@@ -13,7 +13,7 @@ class SimpleTests {
     @Test
     fun oneBigIndustry() {
         val industries = generateOneBingIndustry()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
+        val response = math.analyse(industries, consumption, null, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
@@ -24,7 +24,7 @@ class SimpleTests {
     @Test
     fun oneBigIndustryPlusSmallIndustry() {
         val industries = generateOneBingIndustryPlusOneSmall()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
+        val response = math.analyse(industries, consumption, null, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {
@@ -35,7 +35,7 @@ class SimpleTests {
     @Test
     fun twoBigIndustries() {
         val industries = generateTwoBigIndustries()
-        val response = math.analyse(industries, consumption, YearMonth.of(2021, 12))
+        val response = math.analyse(industries, consumption, null, YearMonth.of(2021, 12))
 
         YearMonth.of(2021, 1).rangeTo(YearMonth.of(2021, 12))
             .forEach {

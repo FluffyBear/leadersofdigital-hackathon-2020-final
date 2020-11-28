@@ -77,7 +77,7 @@ class VvpTest {
                 }.toMap().toSortedMap()
             )
         )
-        val response = math.analyse(industries, consumption, YearMonth.of(2017,12))
+        val response = math.analyse(industries, consumption, null, YearMonth.of(2017,12))
 
         assertEquals(1047447.3, response.power.getValue(YearMonth.of(2014,12)), 1047447.3 / 20)
         assertEquals(1049904.9, response.power.getValue(YearMonth.of(2015,12)), 1049904.9 / 20)
