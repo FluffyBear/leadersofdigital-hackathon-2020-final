@@ -27,9 +27,10 @@ class Math {
             Industry(
                 name = industryToPredict.name,
                 power = industryToPredict.power.firstKey().rangeTo(predictionHorizon).associateWith { yearMonth ->
-                    (industryToPredict.power[yearMonth] ?: regression.estimateRegressionParameters().reduceIndexed { idx, acc, p ->
-                        acc + p * industries[idx - 1].power.getValue(yearMonth)
-                    })
+                    (industryToPredict.power[yearMonth] ?: regression.estimateRegressionParameters()
+                        .reduceIndexed { idx, acc, p ->
+                            acc + p * industries[idx - 1].power.getValue(yearMonth)
+                        })
                 }.toSortedMap()
             )
         }
