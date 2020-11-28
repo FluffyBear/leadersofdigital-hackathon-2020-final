@@ -56,6 +56,7 @@ class Interpolation {
                     (yearMonthProgression.endInclusive.year * 12 + yearMonthProgression.endInclusive.monthValue) -
                             (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue)
                 )
+                    .times((it.year * 12 + it.monthValue) - (yearMonthProgression.start.year * 12 + yearMonthProgression.start.monthValue))
             )
         }
     }
