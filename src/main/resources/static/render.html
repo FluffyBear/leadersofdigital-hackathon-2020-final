@@ -21,7 +21,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     height = 500 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%Y");
+var parseTime = d3.timeParse("%Y-%m");
 
 // set the ranges
 var x = d3.scaleTime().range([0, width]);
@@ -29,12 +29,8 @@ var y = d3.scaleLinear().range([height, 0]);
 
 // define the line
 var valueline = d3.line()
-    .x(function(d) { return x(d.Date); })
-    .y(function(d) { return y(d.Imports); });
-// define the line
-var valueline2 = d3.line()
-    .x(function(d) { return x(d.Date); })
-    .y(function(d) { return y(d.Exports); });
+    .x(function(d) { return x(d[0]); })
+    .y(function(d) { return y(d[1]); });
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
@@ -48,35 +44,24 @@ var svg = d3.select("body").append("svg")
 
 function draw(data, country) {
 
-  var data = data[country];
-
-  // format the data
+  var obj = data.prediction.power;
+  var data = Object.keys(obj).map((key) => [key, obj[key]]);
   data.forEach(function(d) {
-      d.Date = parseTime(d.Date);
-      d.Imports = +d.Imports;
-      d.Exports = +d.Exports;
+      d[0] = parseTime(d[0]);
   });
 
-  // sort years ascending
-  data.sort(function(a, b){
-    return a["Date"]-b["Date"];
-	})
-
   // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.Date; }));
+  x.domain(d3.extent(data, function(d) {
+    return d[0];
+  }));
   y.domain([0, d3.max(data, function(d) {
-	  return Math.max(d.Imports, d.Exports); })]);
+	  return d[1]; })]);
 
   // Add the valueline path.
   svg.append("path")
       .data([data])
       .attr("class", "line")
       .attr("d", valueline);
-  // Add the valueline path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("d", valueline2);
   // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -89,7 +74,7 @@ function draw(data, country) {
 
 // Get the data
 var testCase = location.search.split('test=')[1]
-d3.json("/test/"+testCase+".json", function(data) {
+d3.json("/test/"+testCase+".json").then(data => {
   console.log("Request", data)
 
   d3.json("/analyse", {
@@ -98,12 +83,9 @@ d3.json("/test/"+testCase+".json", function(data) {
     headers: { "Content-type": "application/json; charset=UTF-8" }
   }).then(response => {
       console.log("Result", response)
+      // trigger render
+      draw(response, "Energy");
   });
-
-  // trigger render
-//  draw(data, "Afghanistan");
 });
-
-
 </script>
 </body>
