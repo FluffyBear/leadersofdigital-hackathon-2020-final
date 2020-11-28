@@ -4,7 +4,7 @@ import minenergo.Industry
 import java.time.YearMonth
 
 class AnalyseRequestDto(
-    val industries: List<Industry>,
+    val industries: MutableList<Industry>,
     val energyConsumption: Industry,
     val predictionHorizon: YearMonth
 )
